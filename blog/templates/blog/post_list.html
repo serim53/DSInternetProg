@@ -80,14 +80,25 @@
             {% for p in post_list %}
             <!-- Blog post-->
             <div class="card mb-4">
-              <img class="card-img-top" src="{{ p.head_image.url }}" alt="..." />
-              <div class="card-body">
-                  <h2 class="card-title h4">{{ p.title }}</h2>
-                  <p class="card-text"> {{ p.content }}</p>
+                {% if p.head_image  %}
+                <!-- p라는 것은 models.py에서 정의된 리턴되고 있는 title을 의미 -->
+                    <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{p}}의 head image" />
+                {% else %}
+                    <img class="card-img-top" src="https://picsum.photos/seed/{{p.id}}/800/200"
+                        alt="random image"/>
+                {% endif %}
+                <div class="card-body">
+                  <h2 class="card-title h4">{{ p.title | upper}}</h2>
+                    {% if p.hook_text %}
+                        <h5 class="text_muted">{{ p.hook_text }}</h5>
+                    {% endif %}
+                    <!-- 내용이 너무 길 경우 truncatewords:20로 20개의 단어까지만 보이게 함 -->
+                    <!-- truncatechars:100로 100개의 글자만 보이게 할 수 있음 -->
+                  <p class="card-text"> {{ p.content | truncatechars:100 }}</p>
                   <a class="btn btn-primary" href="{{ p.get_absolute_url }}">Read more →</a>
               </div>
               <div class="card-footer">
-                  <div class="small text-muted">{{ p.created_at }} by 작성자(개발 예정)
+                  <div class="small text-muted">{{ p.created_at | date:"yy-m-d h:m:s" }} by 작성자(개발 예정)
                   </div>
               </div>
             </div>
