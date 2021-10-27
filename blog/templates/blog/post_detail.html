@@ -11,6 +11,7 @@
                             <h1 class="fw-bolder mb-1">{{ post.title }}</h1>
                             <h5 class="text_muted"> {{ post.hook_text }}</h5>
                             <!-- Post meta content-->
+                            <!-- 위쪽에 작성 날짜가 나타나게 함 -->
                             <div class="text-muted fst-italic mb-2">Posted on {{ post.created_at | date:"yy-m-d h:m:s" }} by 작성자(개발예정)</div>
                             <!-- Post categories-->
                             <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
@@ -28,6 +29,8 @@
                         <section class="mb-5">
                             <p>{{ post.content }}</p>
                             {% if post.file_upload %}
+                            <!-- file이 있다면 다운로드받을 수 있는 버튼 만들기 -->
+                            <!-- models.py에서 get_file_name 정의 -->
                                 <a href="{{post.file_upload.url}}" class="btn btn-outline-dark" role="button" download>
                                     Download :
                                     <!-- 확장자가 xlsx나 xls가 맞다면 해당 아이콘을 출력하고 파일의 이름을 출력해라 -->

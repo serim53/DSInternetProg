@@ -121,7 +121,10 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
+# url 지정
 MEDIA_URL = '/media/'
+# 실제로 이미지가 저장되는 위치 지정
+# 이미지를 관리자페이지에서 업로드했을 때 파일탐색기에 _media폴더가 생겨야 함
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
 
 # Default primary key field type
