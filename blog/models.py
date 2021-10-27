@@ -21,6 +21,16 @@ import os
 
 # Create your models here.
 
+class Category(models.Model):
+    name = models.CharField(max_length=50, unique=True)
+    slug = models.SlugField(max_length=200, unique=True, allow_unicode=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name_plural = 'Categories'
+
 class Post(models.Model):
     title = models.CharField(max_length=30)
     hook_text= models.CharField(max_length=100, blank=True)
@@ -40,8 +50,9 @@ class Post(models.Model):
     # CASCADE : USER에서 어떠한 사용자의 계정이 사라지면 그의 포스트도 다 사라짐
     # author = models.ForeignKey(User, on_delete=models.CASCADE)
     # author을 null로 처리하고, delete되었을때도 null로 처리 가능
-    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    author = models.ForeignKey(User, null=True, blank=True, on_delete=models.SET_NULL)
 
+    category = models.ForeignKey(Category, null=True, on_delete=models.SET_NULL)
     # 목록에 보여질 제목을 설정 , pk는 아이디값
     def __str__(self):
         return f'[{self.pk}]{self.title} :: {self.author}'
