@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 import os
 
 # 수정 다 될때마다 마이그레이션 시켜줄 것!!
@@ -36,10 +37,14 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     #author
+    # CASCADE : USER에서 어떠한 사용자의 계정이 사라지면 그의 포스트도 다 사라짐
+    # author = models.ForeignKey(User, on_delete=models.CASCADE)
+    # author을 null로 처리하고, delete되었을때도 null로 처리 가능
+    author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
 
     # 목록에 보여질 제목을 설정 , pk는 아이디값
     def __str__(self):
-        return f'[{self.pk}]{self.title}'
+        return f'[{self.pk}]{self.title} :: {self.author}'
 
     def get_absolute_url(self):
         return f'/blog/{self.pk}'

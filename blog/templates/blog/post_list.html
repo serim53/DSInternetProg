@@ -32,7 +32,7 @@
               </div>
               <div class="card-footer">
                   <!-- 푸터에 작성 날짜 보이게 함 -->
-                  <div class="small text-muted">{{ p.created_at | date:"yy-m-d h:m:s" }} by 작성자(개발 예정)
+                  <div class="small text-muted">{{ p.created_at | date:"20y-m-d h:m:s" }} by {{p.author | upper}}
                   </div>
               </div>
             </div>
