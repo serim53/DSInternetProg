@@ -6,6 +6,7 @@ urlpatterns = [ # 서버IP/blog
 #    path('<int:pk>/', views.single_post_page),
 #    path('', views.index),
 
+    path('category/<str:slug>', views.category_page),
     path('<int:pk>/', views.PostDetail.as_view()),
     path('', views.PostList.as_view()),
     # '' 빈칸으로 보이지만, 현재 위치를 의미하므로 서버 IP/blog를 의미함
