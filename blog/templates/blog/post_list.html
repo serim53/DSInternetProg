@@ -1,58 +1,56 @@
 {% extends 'blog/base.html' %}
 {% block main_area %}
-            <h1>
-                Blog {% if category %} <span class="badge bg-secondary">{{category}}</span>{{% endif %}
-            </h1>
-            {% if post_list.exists %}
-            {% for p in post_list %}
-            <!-- Blog post-->
+              <h1>
+                  Blog
+                  {% if category %}<span class="badge bg-secondary">{{category}}</span>{% endif %}
+                  {% if tag %}<i class="fas fa-tags"></i><span class="badge bg-light">{{tag}}({{ tag.post_set.count}})</span> {% endif %}
+              </h1>
+                {% if post_list.exists %}
+              {% for p in post_list %}
             <div class="card mb-4" id="post-{{p.pk}}">
-                <!-- head_image가 있을 때 -->
-                {% if p.head_image  %}
-                <!-- p라는 것은 models.py에서 정의된 리턴되고 있는 title을 의미 -->
-                <!-- 헤드이미지 추가 -->
-                    <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{p}}의 head image" />
+                {% if p.head_image %}
+              <img class="card-img-top" src="{{ p.head_image.url }}" alt="{{p}}의 head image" />
                 {% else %}
-                <!-- 이미지가 존재하지 않으면 랜덤으로 이미지를 생성한다 -->
-                <!-- seed/id를 추가함으로써 각 게시글마다 고유의 이미지가 출력되게 한다 -->
-                    <img class="card-img-top" src="https://picsum.photos/seed/{{p.id}}/800/200"
-                        alt="random image"/>
+                    <img  class="card-img-top" src="https://picsum.photos/seed/{{p.id}}/800/200"
+                    alt="random image">
                 {% endif %}
-                <div class="card-body">
-                    {% if p.category %}
-                    <span class="badge bg-secondary float-right">{{p.category}}</span>
-                    {% else %}
+              <div class="card-body">
+                  {% if p.category %}
+                  <span class="badge bg-secondary float-right">{{p.category}}</span>
+                  {% else %}
                     <span class="badge bg-secondary float-right">미분류</span>
-                    {% endif %}
-                    <h2 class="card-title h4">{{ p.title | upper}}</h2>
-                    <!-- hook text가 있는 경우에만 출력 -->
-                    <!-- 부트스트랩으로 색 지정 -->
-                    {% if p.hook_text %}
-                        <h5 class="text_muted">{{ p.hook_text }}</h5>
-                    {% endif %}
-                    <!-- 내용이 너무 길 경우 truncatewords:20로 20개의 단어까지만 보이게 함 -->
-                    <!-- truncatechars:100로 100개의 글자만 보이게 할 수 있음 -->
-                  <p class="card-text"> {{ p.content | truncatechars:100 }}</p>
-                    <!-- title을 눌렀을 때 p.get_absolute_url을 통해 이동 -->
-                    <!-- get_absolute_url은 models.py에서 구현 -->
+                  {% endif %}
+                  <h2 class="card-title h4">{{ p.title | upper }}</h2>
+                  {% if p.hook_text %}
+                    <h5 class="text_muted"> {{ p.hook_text }}</h5>
+                  {% endif %}
+                  <p class="card-text">{{ p.content | truncatechars:100 }}</p>
+                  {% if p.tags.exists %}
+                  <i class="fas fa-tags"></i>
+                    {% for tag in p.tags.all %}
+                        <a href="{{tag.get_absolute_url}}"><span class="badge bg-light">{{tag}}</span></a>
+                    {% endfor %}
+                  <br/><br/>
+
+                  {% endif %}
                   <a class="btn btn-primary" href="{{ p.get_absolute_url }}">Read more →</a>
               </div>
-              <div class="card-footer">
-                  <!-- 푸터에 작성 날짜 보이게 함 -->
-                  <div class="small text-muted">{{ p.created_at | date:"20y-m-d h:m:s" }} by {{p.author | upper}}
-                  </div>
-              </div>
-            </div>
-            {% endfor %}
-            <!-- 포스트리스트가 없을 경우의 예외처리를 해줌으로써 test.py에서 나는 NoneType object has no attribute 'text' 오류 제거-->
-            {% else %}
-              <h2>아직 게시물이 없습니다.</h2>
-            {% endif %}
+                <div class="card_footer">
+                    <div class="small text-muted">{{ p.created_at | date:"20y-m-d" }} by {{p.author | upper}}</div>
+                </div>
+          </div>
+              {% endfor %}
+              {% else %}
+                <h2>아직 게시물이 없습니다.</h2>
+              {% endif %}
+
+
           <!-- Pagination-->
+
             <ul class="pagination justify-content-center my-4">
                 <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1" aria-disabled="true">&larr; Newer</a></li>
-                <!-- disabled는 링크가 연결되지 않았다는 뜻-->
                 <li class="page-item"><a class="page-link" href="#!">Older &rarr;</a></li>
             </ul>
-          </div>
+
+      </div>
 {% endblock %}

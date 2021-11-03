@@ -1,10 +1,22 @@
-from django.shortcuts import render
-from django.views.generic import ListView, DetailView
-
-from .models import Post, Category
+from django.shortcuts import render, redirect
+from django.views.generic import ListView, DetailView,CreateView
+from .models import Post, Category, Tag
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 # Create your views here.
+class PostCreate(LoginRequiredMixin,CreateView):
+    model = Post
+    fields = ['title','hook_text','content','head_image','file_upload','category','tags']
+
+    def form_valid(self, form):
+        current_user = self.request.user
+        if current_user.is_authenticated :
+            form.instance.author = current_user
+            return super(PostCreate,self).form_valid(form)
+        else :
+            return redirect('/blog/')
+
 
 class PostList(ListView) :
     model = Post
@@ -16,8 +28,8 @@ class PostList(ListView) :
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
 
-#    template_name = 'blog/post_list.html' # 부를 파일을 직접 지정하고 싶은 경우
-# post_list.html이 불려지는 것
+#    template_name = 'blog/post_list.html'
+# post_list.html
 
 class PostDetail(DetailView) :
     model = Post
@@ -27,8 +39,7 @@ class PostDetail(DetailView) :
         context['categories'] = Category.objects.all()
         context['no_category_post_count'] = Post.objects.filter(category=None).count()
         return context
-
-# post_detail.html이 불려지는 것
+# post_detail.html
 
 def category_page(request, slug):
     if slug == 'no_category' :
@@ -38,36 +49,45 @@ def category_page(request, slug):
         category = Category.objects.get(slug=slug)
         post_list = Post.objects.filter(category=category)
 
+    return render(request, 'blog/post_list.html',{
+
+        'post_list' : post_list,
+        'categories' : Category.objects.all(),
+        'no_category_post_count' : Post.objects.filter(category=None).count(),
+        'category' : category
+    })
+
+def tag_page(request, slug):
+
+    tag = Tag.objects.get(slug=slug)
+    post_list =tag.post_set.all()  # Post.objects.filter(tags=tag)
+
+    return render(request, 'blog/post_list.html',{
+
+        'post_list' : post_list,
+        'categories' : Category.objects.all(),
+        'no_category_post_count' : Post.objects.filter(category=None).count(),
+        'tag' : tag
+    })
+
+
+'''
+def index(request):
+   posts = Post.objects.all().order_by('-pk')
+
     return render(request, 'blog/post_list.html',
                   {
-                      'post_list' : post_list,
-                      'categories' : Category.objects.all(),
-                      'no_category_post_count' : Post.objects.filter(category=None).count(),
-                      'category' : category
+                      'posts' : posts
                   }
                   )
 
-# (2)
-# def index(request) :
-#     # pk를 기준으로 정렬을 하고 거꾸로 해주기 위해 앞에 -를 붙여줌
-#     # 이렇게 해야 글이 최신순으로 보여짐
-#     posts = Post.objects.all().order_by('-pk')
-#     return render(request, 'blog/post_list.html',
-#                   {
-#                       'posts' : posts
-#                   }
-#                   )
 
-# (1)
-# 렌더링 / render(request, 그려진 템플릿(출력할 문서))
-# view에서 보여지는 구조와 실제 파일 위치와 다름
-# blog/post_detail.html은 실제로는 blog/templates/blog/post_detail.html
-# 경로임
+def single_post_page(request, pk):
+    post = Post.objects.get(pk=pk)
 
-# def single_post_page(request, pk) :
-#     post = Post.objects.get(pk=pk)
-#     return render(request, 'blog/post_detail.html',
-#                   {
-#                       'post': post
-#                   }
-#                   )
+    return render(request, 'blog/post_detail.html',
+                  {
+                      'post': post
+                  }
+                  )
+'''
