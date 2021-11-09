@@ -8,6 +8,8 @@ class TestView(TestCase):
     def setUp(self):
         self.client= Client()
         self.user_james = User.objects.create_user(username='James',password='somepassword')
+        self.user_james.is_staff = True
+        self.user_james.save()
         self.user_trump = User.objects.create_user(username='Trump', password='somepassword')
 
         self.category_programming = Category.objects.create(name='programming',slug='programming')
@@ -68,7 +70,7 @@ class TestView(TestCase):
 
 
     def test_category_page(self):
-        # ㅋㅏ테고리 페이지 Url로 불러오기
+        # 카테고리 페이지 Url로 불러오기
         response = self.client.get(self.category_programming.get_absolute_url())
         self.assertEqual(response.status_code,200)
 
@@ -88,7 +90,7 @@ class TestView(TestCase):
 
 
     def test_tag_page(self):
-        # ㅋㅏ테고리 페이지 Url로 불러오기
+        # 카테고리 페이지 Url로 불러오기
         response = self.client.get(self.tag_hello.get_absolute_url())
         self.assertEqual(response.status_code,200)
 
@@ -114,12 +116,17 @@ class TestView(TestCase):
         self.client.login(username='Trump', password='somepassword')
         response = self.client.get('/blog/create_post/')
         # 정상적으로 페이지가 로드
+        self.assertNotEqual(response.status_code, 200)
+
+        self.client.login(username='James', password='somepassword')
+        response = self.client.get('/blog/create_post/')
         self.assertEqual(response.status_code, 200)
+
         # 페이지 타이틀 blog
         soup = BeautifulSoup(response.content, 'html.parser')
         self.assertEqual(soup.title.text, 'Create Post - Blog')
         main_area = soup.find('div', id='main-area')
-        self.assertIn('Create New Post',main_area.text)
+        self.assertIn('Create New Post', main_area.text)
 
         self.client.post('/blog/create_post/',{
             'title' : 'Post form 만들기',
@@ -127,12 +134,11 @@ class TestView(TestCase):
         })
         last_post = Post.objects.last()
         self.assertEqual(last_post.title,"Post form 만들기")
-        self.assertEqual(last_post.author.username,'Trump')
+        self.assertEqual(last_post.author.username,'James')
 
 
     def test_post_list(self):
         self.assertEqual(Post.objects.count(), 3)
-
 
         # 포스트 목록 페이지를 가져온다
         response = self.client.get('/blog/')
