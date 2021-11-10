@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'crispy_forms',
+    'markdownx',
     'blog',
     'single_pages'
 ]
@@ -126,6 +128,8 @@ MEDIA_URL = '/media/'
 # 실제로 이미지가 저장되는 위치 지정
 # 이미지를 관리자페이지에서 업로드했을 때 파일탐색기에 _media폴더가 생겨야 함
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
+
+CRISPY_TEMPLATE_PACK = "bootstrap4"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

@@ -34,6 +34,7 @@ urlpatterns = [
     path('blog/', include('blog.urls')), # 서버IP/blog
     path('admin/', admin.site.urls),    # 서버IP/admin
     path('', include('single_pages.urls')), # 서버IP/
+    path('markdownx/', include('markdownx.urls'))
     # single_pages 아래에 urls.py 추가해줄 것
 ]
 
