@@ -25,7 +25,6 @@ from django.conf import settings
 # import로 path랑 include 해줘야함
 # path(서버IP/작성된 주소, 호출될 함수)
 
-
 urlpatterns = [
     # 기본적으로 처음에는 blog앱에 urls파일이 없지만, 추후 추가할 것임
     # 따라서 먼저 path에 blog.urls 파일을 include함을 작성해주어야 함
