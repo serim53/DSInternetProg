@@ -1,6 +1,6 @@
 from django.test import TestCase, Client
 from bs4 import BeautifulSoup
-from .models import Post, Category, Tag
+from .models import Post, Category, Tag, Comment
 from django.contrib.auth.models import User
 
 # Create your tests here.
@@ -21,7 +21,7 @@ class TestView(TestCase):
         self.tag_hello = Tag.objects.create(name='hello',slug='hello')
 
 
-        # 포스트게시물이 2개 존재하는 경우
+        # 포스트게시물이 3개 존재하는 경우
         self.post_001 = Post.objects.create(
             title='첫 번째 포스트 입니다.',
             content='hello world!! we are the world',
@@ -46,6 +46,11 @@ class TestView(TestCase):
         self.post_003.tags.add(self.tag_python)
         self.post_003.tags.add(self.tag_python_kor)
 
+        self.comment_001 = Comment.objects.create(
+            post = self.post_001,
+            author = self.user_trump,
+            content = '첫번째 댓글입니다.'
+        )
     def navbar_test(self,soup):
         navbar = soup.nav
         # 네비게이션바에 blog about me 라는 문구가 있다.
@@ -276,7 +281,7 @@ class TestView(TestCase):
         self.assertIn(self.post_001.title, soup.title.text)
         # 포스트의 title은 포스트영역에도 있는가
         main_area = soup.find('div', id='main-area')
-        post_area = main_area.find('div',id="post-area")
+        post_area = main_area.find('div', id="post-area")
         self.assertIn(self.post_001.title, post_area.text)
         self.assertIn(self.post_001.category.name, post_area.text)
 
@@ -290,4 +295,8 @@ class TestView(TestCase):
 
         self.assertIn(self.user_james.username.upper(),post_area.text)
 
+        comments_area = soup.find('div', id='comment-area')
+        comment_001_area = comments_area.find('div', id='comment-1')
+        self.assertIn(self.comment_001.author.username,comment_001_area.text)
+        self.assertIn(self.comment_001.content, comment_001_area.text)
 
