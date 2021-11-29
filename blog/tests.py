@@ -32,14 +32,14 @@ class TestView(TestCase):
 
         self.post_002 = Post.objects.create(
             title='두 번째 포스트 입니다.',
-            content='1등이 전부가 아니잖아요.',
+            content='1등이 전부가 아니잖아요',
             author=self.user_trump,
             category=self.category_culture
         )
 
         self.post_003 = Post.objects.create(
             title='세 번째 파이썬 포스트 입니다.',
-            content='세 번째 포스트 입니다.',
+            content='세번째 포스트 입니다.',
             author=self.user_trump,
 
         )
